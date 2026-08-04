@@ -1,0 +1,721 @@
+<div id="fnd-nearby" class="fnd-nearby">
+  <style>
+    .fnd-nearby {
+      --ink: #2e2825;
+      --muted: #8c817c;
+      --pink: #ad5268;
+      --border: #eee3df;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 0 12px;
+    }
+    .fnd-nearby * { box-sizing: border-box; }
+    .fnd-head { margin-bottom: 16px; }
+    .fnd-kicker {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #b16b7b;
+    }
+    .fnd-title {
+      margin: 4px 0 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.15;
+    }
+    .fnd-meta {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .fnd-meta span { font-size: 12px; color: var(--muted); }
+    .fnd-gmap {
+      width: 100%;
+      height: 420px;
+      margin: 16px 0;
+      border: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .fnd-gmap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .fnd-map-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin: -8px 0 12px;
+    }
+    .fnd-map-reset {
+      border: 0;
+      border-radius: 999px;
+      background: #f7ecee;
+      color: #a45266;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+    .fnd-panel {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: #fff;
+      padding: 12px;
+      box-shadow: 0 12px 36px rgba(83, 53, 43, 0.08);
+    }
+    .fnd-search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 48px;
+      padding: 0 14px;
+      border-radius: 16px;
+      background: #f8f4f2;
+    }
+    .fnd-search input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      font-size: 14px;
+      outline: none;
+      color: var(--ink);
+    }
+    .fnd-search input::placeholder { color: #a79c97; }
+    .fnd-locate {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--pink);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+    }
+    .fnd-locate:disabled { opacity: 0.6; cursor: wait; }
+    .fnd-msg {
+      margin: 10px 2px 0;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #8d5d68;
+    }
+    .fnd-list { margin-top: 16px; display: grid; gap: 12px; }
+    .fnd-card {
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid #f0e7e3;
+      border-radius: 22px;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .fnd-card:hover,
+    .fnd-card.is-active {
+      border-color: #e5bcc7;
+      box-shadow: 0 8px 24px rgba(173, 82, 104, 0.12);
+    }
+    .fnd-card.is-pinned {
+      border-color: #d4a5b3;
+      background: linear-gradient(180deg, #fffafb 0%, #fff 100%);
+    }
+    .fnd-rank {
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #f7ecee;
+      color: #a45266;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .fnd-body { min-width: 0; flex: 1; }
+    .fnd-row {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .fnd-name {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .fnd-zh {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: #9a8c86;
+    }
+    .fnd-addr {
+      margin: 6px 0 0;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #756965;
+    }
+    .fnd-badge {
+      flex-shrink: 0;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f7f2ef;
+      font-size: 10px;
+      font-weight: 700;
+      color: #805f57;
+      white-space: nowrap;
+    }
+    .fnd-badge.featured {
+      background: #f7ecee;
+      color: #a45266;
+    }
+    .fnd-badge.shop {
+      background: #e8f0e8;
+      color: #4a6b4c;
+    }
+    .fnd-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+    .fnd-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: 11px;
+      color: #756965;
+    }
+    .fnd-open { font-weight: 700; color: #5c875f; }
+    .fnd-go {
+      flex-shrink: 0;
+      align-self: center;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: #322a27;
+      color: #fff;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .fnd-empty,
+    .fnd-loading {
+      padding: 32px 20px;
+      border-radius: 22px;
+      background: #f8f3f1;
+      text-align: center;
+      font-size: 13px;
+      color: #8f817b;
+    }
+  </style>
+
+  <div class="fnd-meta fnd-head">
+    <div>
+      <div class="fnd-kicker">Flower vending spots</div>
+      <h2 class="fnd-title">販賣機網點</h2>
+      <h4>販賣美好・門市/辦事處:
+中環鴨巴甸街35號元創方B座H304
+</h4>
+    </div>
+    <span id="fnd-count">Loading…</span>
+  </div>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="" />
+
+  <div id="fnd-gmap" class="fnd-gmap" aria-label="All vending machine locations"></div>
+  <div class="fnd-map-toolbar">
+    <button id="fnd-hide-all" class="fnd-map-reset" type="button" hidden>Hide all</button>
+    <button id="fnd-show-all" class="fnd-map-reset" type="button" hidden>Show all locations</button>
+  </div>
+
+  <div class="fnd-panel">
+    <label class="fnd-search">
+      <span aria-hidden="true">🔍</span>
+      <input id="fnd-query" type="search" placeholder="Search area or address" />
+      <button id="fnd-locate" class="fnd-locate" type="button" aria-label="Use my current location">◎</button>
+    </label>
+  </div>
+
+  <p id="fnd-msg" class="fnd-msg" hidden></p>
+  <div id="fnd-list" class="fnd-list"><div class="fnd-loading">Loading locations…</div></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+  <script>
+    (function () {
+      var CSV_URL = "https://claudia-floweb.vercel.app/locations.csv";
+      var GOOGLE_MY_MAPS = "https://www.google.com/maps/d/embed?mid=1-hgEfcTPZzDDuB8wo_aV9SvsYIXKdGY&ehbc=2E312F";
+      var MAP_FOCUS_ZOOM = 15;
+
+      var STORES = [];
+      var query = "";
+      var sortMode = "default";
+      var nearbyActive = false;
+      var listVisible = true;
+      var activeId = null;
+      var leafletMap = null;
+      var markerLayer = null;
+      var markerById = {};
+
+      var root = document.getElementById("fnd-nearby");
+      var listEl = document.getElementById("fnd-list");
+      var countEl = document.getElementById("fnd-count");
+      var msgEl = document.getElementById("fnd-msg");
+      var locateBtn = document.getElementById("fnd-locate");
+      var queryInput = document.getElementById("fnd-query");
+      var mapEl = document.getElementById("fnd-gmap");
+      var showAllBtn = document.getElementById("fnd-show-all");
+      var hideAllBtn = document.getElementById("fnd-hide-all");
+
+      function setListVisible(visible) {
+        listVisible = visible;
+        listEl.hidden = !visible;
+        if (!visible) msgEl.hidden = true;
+        hideAllBtn.hidden = !visible;
+        showAllBtn.hidden = visible;
+      }
+
+      function storeAddress(store) {
+        return store.address_en || store.address_zh || store.name;
+      }
+
+      function parseCsv(text) {
+        var rows = [];
+        var row = [];
+        var cell = "";
+        var inQuotes = false;
+
+        for (var i = 0; i < text.length; i++) {
+          var ch = text[i];
+          var next = text[i + 1];
+
+          if (ch === '"') {
+            if (inQuotes && next === '"') {
+              cell += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+            continue;
+          }
+
+          if (!inQuotes && ch === ",") {
+            row.push(cell);
+            cell = "";
+            continue;
+          }
+
+          if (!inQuotes && (ch === "\n" || ch === "\r")) {
+            if (ch === "\r" && next === "\n") i++;
+            row.push(cell);
+            if (row.some(function (v) { return v.trim(); })) rows.push(row);
+            row = [];
+            cell = "";
+            continue;
+          }
+
+          cell += ch;
+        }
+
+        if (cell.length || row.length) {
+          row.push(cell);
+          if (row.some(function (v) { return v.trim(); })) rows.push(row);
+        }
+
+        if (!rows.length) return [];
+
+        var headers = rows[0].map(function (h) { return h.trim(); });
+        return rows.slice(1).map(function (cols) {
+          var item = {};
+          headers.forEach(function (header, index) {
+            item[header] = (cols[index] || "").trim();
+          });
+          item.sort_order = Number(item.sort_order || 999);
+          item.latitude = Number(item.latitude);
+          item.longitude = Number(item.longitude);
+          item.pinned = item.pinned === "1";
+          item.distance_km = null;
+          return item;
+        });
+      }
+
+      function haversine(lat1, lon1, lat2, lon2) {
+        var R = 6371;
+        var dLat = ((lat2 - lat1) * Math.PI) / 180;
+        var dLon = ((lon2 - lon1) * Math.PI) / 180;
+        var a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos((lat1 * Math.PI) / 180) *
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      }
+
+      function defaultSort(stores) {
+        return stores.slice().sort(function (a, b) {
+          return a.sort_order - b.sort_order;
+        });
+      }
+
+      function distanceSort(stores) {
+        var pinned = stores.filter(function (s) { return s.pinned; });
+        var rest = stores.filter(function (s) { return !s.pinned; }).sort(function (a, b) {
+          return (a.distance_km || 999) - (b.distance_km || 999);
+        });
+        return pinned.concat(rest);
+      }
+
+      function sortedStores(stores) {
+        return sortMode === "distance" ? distanceSort(stores) : defaultSort(stores);
+      }
+
+      function visibleStores(stores) {
+        var needle = query.trim().toLowerCase();
+        return stores.filter(function (store) {
+          var haystack = [
+            store.name,
+            store.name_zh,
+            store.address_en,
+            store.address_zh,
+            store.phone,
+          ].join(" ").toLowerCase();
+          return !needle || haystack.indexOf(needle) !== -1;
+        });
+      }
+
+      function directionsUrl(store) {
+        return (
+          "https://www.google.com/maps/dir/?api=1&destination=" +
+          encodeURIComponent(store.latitude + "," + store.longitude)
+        );
+      }
+
+      function fallbackMyMapsIframe() {
+        mapEl.innerHTML =
+          '<iframe title="Flower Nice Day locations on Google Maps" src="' +
+          GOOGLE_MY_MAPS +
+          '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+      }
+
+      function buildPopup(store) {
+        return (
+          "<strong>" +
+          escapeHtml(store.name) +
+          "</strong><br>" +
+          escapeHtml(store.name_zh) +
+          "<br><small>" +
+          escapeHtml(store.address_en) +
+          "</small>"
+        );
+      }
+
+      function renderAllMarkers(stores) {
+        if (!window.L) {
+          fallbackMyMapsIframe();
+          return;
+        }
+
+        if (!leafletMap) {
+          leafletMap = L.map(mapEl, { scrollWheelZoom: false }).setView([22.32, 114.12], 11);
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap",
+          }).addTo(leafletMap);
+          markerLayer = L.layerGroup().addTo(leafletMap);
+        }
+
+        markerLayer.clearLayers();
+        markerById = {};
+
+        var bounds = [];
+        stores.forEach(function (store, index) {
+          if (!store.latitude || !store.longitude) return;
+          var latLng = [store.latitude, store.longitude];
+          bounds.push(latLng);
+
+          var marker = L.marker(latLng, {
+            title: store.name,
+          }).bindPopup(buildPopup(store));
+
+          marker.on("click", function () {
+            highlightStore(store.id, false);
+          });
+
+          markerLayer.addLayer(marker);
+          markerById[store.id] = marker;
+        });
+
+        if (bounds.length) {
+          leafletMap.fitBounds(bounds, { padding: [36, 36], maxZoom: 12 });
+        }
+      }
+
+      function hideAllLocations() {
+        setListVisible(false);
+      }
+
+      function showAllLocations() {
+        nearbyActive = false;
+        query = "";
+        queryInput.value = "";
+        activeId = null;
+        setListVisible(true);
+        renderAllMarkers(STORES);
+        renderList(STORES);
+        setMessage("");
+      }
+
+      function centerMapOnStore(store, animate) {
+        if (!leafletMap || !store || !store.latitude || !store.longitude) return;
+        leafletMap.invalidateSize();
+        leafletMap.setView(
+          [store.latitude, store.longitude],
+          MAP_FOCUS_ZOOM,
+          { animate: animate !== false }
+        );
+      }
+
+      function highlightStore(id, pan) {
+        activeId = id;
+        renderList(STORES);
+        var store = STORES.find(function (s) { return s.id === id; });
+        if (!store) return;
+        if (pan !== false) {
+          centerMapOnStore(store, true);
+        }
+        var marker = markerById[id];
+        if (marker) {
+          marker.openPopup();
+        }
+      }
+
+      function focusOnMap(store) {
+        if (!store) return;
+        highlightStore(store.id, true);
+      }
+
+      function setMessage(text) {
+        if (!text) {
+          msgEl.hidden = true;
+          msgEl.textContent = "";
+          return;
+        }
+        msgEl.hidden = false;
+        msgEl.textContent = text;
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderList(stores) {
+        var ordered = sortedStores(visibleStores(stores));
+        countEl.textContent = ordered.length + " place" + (ordered.length === 1 ? "" : "s");
+
+        if (!ordered.length) {
+          listEl.innerHTML =
+            '<div class="fnd-empty"><strong>No locations found</strong><p>Try another search term.</p></div>';
+          return;
+        }
+
+        listEl.innerHTML = ordered
+          .map(function (store, index) {
+            var isActive = store.id === activeId;
+            var badges = [];
+            if (store.pinned) {
+              badges.push('<span class="fnd-badge featured">Featured</span>');
+            }
+            if (store.type === "shop") {
+              badges.push('<span class="fnd-badge shop">Shop</span>');
+            }
+            if (store.distance_km != null) {
+              badges.push('<span class="fnd-badge">' + store.distance_km + " km</span>");
+            }
+            var badge = badges.length
+              ? '<div class="fnd-badges">' + badges.join("") + "</div>"
+              : "";
+
+            return (
+              '<article class="fnd-card' +
+              (isActive ? " is-active" : "") +
+              (store.pinned ? " is-pinned" : "") +
+              '" data-id="' +
+              escapeHtml(store.id) +
+              '">' +
+              '<div class="fnd-rank">' +
+              (index + 1) +
+              "</div>" +
+              '<div class="fnd-body">' +
+              '<div class="fnd-row">' +
+              "<div><h3 class=\"fnd-name\">" +
+              escapeHtml(store.name) +
+              '</h3><p class="fnd-zh">' +
+              escapeHtml(store.name_zh) +
+              "</p></div>" +
+              badge +
+              "</div>" +
+              '<p class="fnd-addr">' +
+              escapeHtml(store.address_en) +
+              (store.address_zh ? "<br>" + escapeHtml(store.address_zh) : "") +
+              "</p>" +
+              '<div class="fnd-meta-row">' +
+              (store.phone ? "<span>📞 " + escapeHtml(store.phone) + "</span>" : "") +
+              (store.hours ? "<span>🕐 " + escapeHtml(store.hours) + "</span>" : "") +
+              '<span class="fnd-open">Open</span>' +
+              (store.website
+                ? ' <a href="' +
+                  escapeHtml(store.website) +
+                  '" target="_blank" rel="noopener noreferrer">Website</a>'
+                : "") +
+              "</div>" +
+              "</div>" +
+              '<a class="fnd-go" href="' +
+              directionsUrl(store) +
+              '" target="_blank" rel="noopener noreferrer" aria-label="Directions">➤</a>' +
+              "</article>"
+            );
+          })
+          .join("");
+
+        listEl.querySelectorAll(".fnd-card").forEach(function (card) {
+          card.addEventListener("click", function (event) {
+            if (event.target.closest("a")) return;
+            var id = card.getAttribute("data-id");
+            var store = STORES.find(function (s) { return s.id === id; });
+            if (store) focusOnMap(store);
+          });
+        });
+      }
+
+      function nearestStore(stores) {
+        var nearest = null;
+        stores.forEach(function (store) {
+          if (store.distance_km == null || !store.latitude || !store.longitude) return;
+          if (!nearest || store.distance_km < nearest.distance_km) nearest = store;
+        });
+        return nearest;
+      }
+
+      function applyUserLocation(pos, auto) {
+        STORES = STORES.map(function (store) {
+          var copy = Object.assign({}, store);
+          copy.distance_km =
+            Math.round(
+              haversine(
+                pos.coords.latitude,
+                pos.coords.longitude,
+                store.latitude,
+                store.longitude
+              ) * 10
+            ) / 10;
+          return copy;
+        });
+        sortMode = "distance";
+        nearbyActive = true;
+        var nearest = nearestStore(STORES);
+        if (nearest) {
+          query = storeAddress(nearest);
+          queryInput.value = query;
+          highlightStore(nearest.id, true);
+          setMessage(
+            auto
+              ? "Showing the nearest location (" + nearest.distance_km + " km away)."
+              : "Sorted by distance. Nearest: " + nearest.name + " (" + nearest.distance_km + " km)."
+          );
+        } else {
+          renderList(STORES);
+          setMessage("Sorted by distance.");
+        }
+      }
+
+      function requestUserLocation(auto) {
+        if (!navigator.geolocation) {
+          if (!auto) setMessage("Location is not supported by this browser.");
+          return;
+        }
+        locateBtn.disabled = true;
+        if (!auto) setMessage("");
+        navigator.geolocation.getCurrentPosition(
+          function (pos) {
+            locateBtn.disabled = false;
+            applyUserLocation(pos, auto);
+          },
+          function () {
+            locateBtn.disabled = false;
+            if (auto) {
+              sortMode = "default";
+              renderAllMarkers(STORES);
+              renderList(STORES);
+            } else {
+              setMessage("Location access was not allowed. Showing default order.");
+            }
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+      }
+
+      function loadCsv() {
+        return fetch(CSV_URL, { cache: "no-store" })
+          .then(function (res) {
+            if (!res.ok) throw new Error("CSV not found");
+            return res.text();
+          })
+          .then(function (text) {
+            STORES = parseCsv(text);
+            if (!STORES.length) throw new Error("CSV is empty");
+            sortMode = "default";
+            nearbyActive = false;
+            renderAllMarkers(STORES);
+            renderList(STORES);
+            showAllBtn.textContent = "Show all " + STORES.length + " locations";
+            setListVisible(true);
+            requestUserLocation(true);
+          });
+      }
+
+      showAllBtn.addEventListener("click", showAllLocations);
+      hideAllBtn.addEventListener("click", hideAllLocations);
+
+      queryInput.addEventListener("input", function (event) {
+        query = event.target.value;
+        nearbyActive = false;
+        renderList(STORES);
+      });
+
+      locateBtn.addEventListener("click", function () {
+        requestUserLocation(false);
+      });
+
+      loadCsv().catch(function () {
+        listEl.innerHTML =
+          '<div class="fnd-empty"><strong>Could not load locations.csv</strong><p>Check https://claudia-floweb.vercel.app/locations.csv</p></div>';
+        countEl.textContent = "0 places";
+        fallbackMyMapsIframe();
+      });
+    })();
+  </script>
+</div>
