@@ -1,9 +1,9 @@
 sort_order,id,name,name_zh,type,address_en,address_zh,phone,website,hours,latitude,longitude,pinned
 1,fnd-airport,Flower Nice Day — Hong Kong International Airport,販賣美好・香港國際機場,vending,"Level 5, Arrivals M&G Hall, Terminal 1, Hong Kong International Airport","香港國際機場T1入境大堂5T200號舖",,,24 hours,22.3153,113.9365,1
 2,fnd-pmq,Flower Nice Day — PMQ,販賣美好・元創方,vending,"SG09, G/F, PMQ, 35 Aberdeen Street, Central","中環鴨巴甸街35號元創方地下SG09",,,24 hours,22.2833,114.1472,0
-3,fnd-beacon-9,Beacon Hill — 9 Lung Kui Road,筆架山龍曲路9號,vending,"9 Lung Kui Rd, Beacon Hill","筆架山龍曲路9號",,,24 hours,22.3518,114.1872,0
+3,fnd-beacon-9,Beacon Hill — 9 Lung Kui Road,畢架山龍曲路9號,vending,"9 Lung Kui Rd, Beacon Hill","筆架山龍曲路9號",,,24 hours,22.3518,114.1872,0
 4,fnd-office,Flower Nice Day — Shop & Office,販賣美好・門市/辦事處,shop,"H304, Block B, PMQ, 35 Aberdeen Street, Central","中環鴨巴甸街35號元創方B座H304",,,,22.2834,114.1473,0
-5,fnd-beacon-3,Beacon Hill — 3 Lung Kui Road,筆架山龍曲路3號,vending,"3 Lung Kui Rd, Beacon Hill","筆架山龍曲路3號",,,24 hours,22.3512,114.1868,0
+5,fnd-beacon-3,Beacon Hill — 3 Lung Kui Road,畢架山龍曲路3號,vending,"3 Lung Kui Rd, Beacon Hill","筆架山龍曲路3號",,,24 hours,22.3512,114.1868,0
 6,fnd-cwb-peninsula,Clear Water Bay Peninsula Club,清水灣半島會所,vending,"3/F, Clear Water Bay Peninsula Club","清水灣半島會所3樓",,,24 hours,22.3265,114.2648,0
 7,fnd-koko-hills,KOKO HILLS,KOKO HILLS,vending,"3 Ko Ling Road, Lam Tin, Kowloon","九龍藍田高嶺道3號",,,24 hours,22.3061,114.2307,0
 8,fnd-one-kai-tak-2,One Kai Tak (II),啟德1號 (II),vending,"No 8 Muk Ning Street, Kai Tak, Hong Kong","香港啟德沐寧街8號",,,24 hours,22.3297,114.2001,0
