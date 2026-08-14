@@ -2,6 +2,8 @@
 
 Host only the location data on Vercel. Paste the embed HTML into SHOPLINE (no full app hosting).
 
+**Single embed file:** `docs/shopline-nearby-embed.html` — copy this entire file into SHOPLINE.
+
 ## 1. Deploy CSV to Vercel
 
 From the repo root:
