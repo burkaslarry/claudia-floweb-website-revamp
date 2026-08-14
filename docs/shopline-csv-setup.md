@@ -64,6 +64,6 @@ Edit `public/locations.csv` and redeploy. The SHOPLINE page reloads fresh data (
 3. Snap Fitness To Kwa Wan
 4. Beacon Hill 9 Lung Kui Rd
 5. Beacon Hill 3 Lung Kui Rd
-6. Clear Water Bay Peninsula Club 3/F
+6. Clear Water Bay Peninsula Club — 8 Pung Loi Road / 將軍澳蓬萊路8號
 
 Adjust coordinates in the CSV if pins need fine-tuning in Google Maps.

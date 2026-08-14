@@ -4,6 +4,6 @@ sort_order,id,name,name_zh,type,address_en,address_zh,phone,website,hours,latitu
 3,fnd-beacon-9,Beacon Hill — 9 Lung Kui Road,畢架山龍駒道9號,vending,"9 Lung Kui Road, Beacon Hill, Kowloon","畢架山龍駒道9號",,,24 hours,22.344038,114.171319,0
 4,fnd-office,Flower Nice Day — Shop & Office,販賣美好・門市/辦事處,shop,"H304, Block B, PMQ, 35 Aberdeen Street, Central","中環鴨巴甸街35號元創方B座H304",,,,22.283419,114.151856,0
 5,fnd-beacon-3,Beacon Hill — 3 Lung Kui Road,畢架山龍駒道3號,vending,"3 Lung Kui Road, Beacon Hill, Kowloon","畢架山龍駒道3號",,,24 hours,22.342803,114.169107,0
-6,fnd-cwb-peninsula,Clear Water Bay Peninsula Club,清水灣半島會所,vending,"Club Oscar, 8 Pui Shing Road, Tseung Kwan O","將軍澳蓬萊路8號清水灣半島會所3樓",,,24 hours,22.307599,114.267020,0
+6,fnd-cwb-peninsula,Clear Water Bay Peninsula Club,清水灣半島會所,vending,"8 Pung Loi Road, Tseung Kwan O","將軍澳蓬萊路8號",,,24 hours,22.307599,114.267020,0
 7,fnd-koko-hills,KOKO HILLS,KOKO HILLS,vending,"3 Ko Ling Road, Lam Tin, Kowloon","九龍藍田高嶺道3號",,,24 hours,22.306340,114.230180,0
 8,fnd-one-kai-tak-2,One Kai Tak (II),啟德1號 (II),vending,"8 Muk Ning Street, Kai Tak, Kowloon","香港啟德沐寧街8號",,,24 hours,22.329488,114.199920,0
