@@ -8,10 +8,46 @@
           "value": "*"
         },
         {
+          "key": "Content-Type",
+          "value": "text/csv; charset=utf-8"
+        },
+        {
           "key": "Cache-Control",
           "value": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
         }
       ]
+    },
+    {
+      "source": "/shop.html",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60, s-maxage=300"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/shop.html"
     }
   ]
 }
