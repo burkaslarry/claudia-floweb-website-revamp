@@ -269,6 +269,9 @@
       font-size: 13px;
       color: #8f817b;
     }
+    .fnd-csv-fallback {
+      display: none !important;
+    }
     @media (max-width: 640px) {
       .fnd-nearby {
         --pad: 18px;
@@ -372,10 +375,27 @@
     <div id="fnd-list" class="fnd-list"><div class="fnd-loading">Loading locations…</div></div>
   </div>
 
+  <!-- FND_CSV_TEXTAREA_START -->
+  <textarea id="fnd-csv-fallback" class="fnd-csv-fallback" hidden readonly>sort_order,id,name,name_zh,type,address_en,address_zh,phone,website,hours,latitude,longitude,pinned
+1,fnd-airport,Flower Nice Day — Hong Kong International Airport,販賣美好・香港國際機場,vending,"Shop 5T200, Level 5, Arrivals Hall, Terminal 1, Hong Kong International Airport, Chek Lap Kok","香港國際機場第一航廈入境大堂5樓5T200號舖",,,24 hours,22.315988,113.936595,1
+2,fnd-pmq,Flower Nice Day — PMQ,販賣美好・元創方,vending,"SG09, G/F, PMQ, 35 Aberdeen Street, Central","中環鴨巴甸街35號元創方地下SG09",,,24 hours,22.283419,114.151856,0
+3,fnd-beacon-9,Beacon Hill — 9 Lung Kui Road,畢架山龍駒道9號,vending,"9 Lung Kui Road, Beacon Hill, Kowloon","畢架山龍駒道9號",,,24 hours,22.344038,114.171319,0
+4,fnd-office,Flower Nice Day — Shop & Office,販賣美好・門市/辦事處,shop,"H304, Block B, PMQ, 35 Aberdeen Street, Central","中環鴨巴甸街35號元創方B座H304",,,,22.283419,114.151856,0
+5,fnd-beacon-3,Beacon Hill — 3 Lung Kui Road,畢架山龍駒道3號,vending,"3 Lung Kui Road, Beacon Hill, Kowloon","畢架山龍駒道3號",,,24 hours,22.342803,114.169107,0
+6,fnd-cwb-peninsula,Clear Water Bay Peninsula Club,清水灣半島會所,vending,"8 Pung Loi Road, Tseung Kwan O","將軍澳蓬萊路8號",,,24 hours,22.307599,114.267020,0
+7,fnd-koko-hills,KOKO HILLS,KOKO HILLS,vending,"3 Ko Ling Road, Lam Tin, Kowloon","九龍藍田高嶺道3號",,,24 hours,22.306340,114.230180,0
+8,fnd-one-kai-tak-2,One Kai Tak (II),啟德1號 (II),vending,"8 Muk Ning Street, Kai Tak, Kowloon","香港啟德沐寧街8號",,,24 hours,22.329488,114.199920,0
+</textarea>
+  <!-- FND_CSV_TEXTAREA_END -->
+
   <script>
     (function () {
-      var CSV_URL = "https://claudia-floweb.vercel.app/locations.csv";
+      var CSV_URLS = ["https://claudia-floweb.vercel.app/locations.csv"];
+      var CSV_JS_URL = "https://claudia-floweb.vercel.app/locations.js";
       var GOOGLE_MY_MAPS = "https://www.google.com/maps/d/embed?mid=1-hgEfcTPZzDDuB8wo_aV9SvsYIXKdGY&ehbc=2E312F";
+      /* FND_FALLBACK_CSV_START */
+      var FALLBACK_CSV = "sort_order,id,name,name_zh,type,address_en,address_zh,phone,website,hours,latitude,longitude,pinned\n1,fnd-airport,Flower Nice Day — Hong Kong International Airport,販賣美好・香港國際機場,vending,\"Shop 5T200, Level 5, Arrivals Hall, Terminal 1, Hong Kong International Airport, Chek Lap Kok\",\"香港國際機場第一航廈入境大堂5樓5T200號舖\",,,24 hours,22.315988,113.936595,1\n2,fnd-pmq,Flower Nice Day — PMQ,販賣美好・元創方,vending,\"SG09, G/F, PMQ, 35 Aberdeen Street, Central\",\"中環鴨巴甸街35號元創方地下SG09\",,,24 hours,22.283419,114.151856,0\n3,fnd-beacon-9,Beacon Hill — 9 Lung Kui Road,畢架山龍駒道9號,vending,\"9 Lung Kui Road, Beacon Hill, Kowloon\",\"畢架山龍駒道9號\",,,24 hours,22.344038,114.171319,0\n4,fnd-office,Flower Nice Day — Shop & Office,販賣美好・門市/辦事處,shop,\"H304, Block B, PMQ, 35 Aberdeen Street, Central\",\"中環鴨巴甸街35號元創方B座H304\",,,,22.283419,114.151856,0\n5,fnd-beacon-3,Beacon Hill — 3 Lung Kui Road,畢架山龍駒道3號,vending,\"3 Lung Kui Road, Beacon Hill, Kowloon\",\"畢架山龍駒道3號\",,,24 hours,22.342803,114.169107,0\n6,fnd-cwb-peninsula,Clear Water Bay Peninsula Club,清水灣半島會所,vending,\"8 Pung Loi Road, Tseung Kwan O\",\"將軍澳蓬萊路8號\",,,24 hours,22.307599,114.267020,0\n7,fnd-koko-hills,KOKO HILLS,KOKO HILLS,vending,\"3 Ko Ling Road, Lam Tin, Kowloon\",\"九龍藍田高嶺道3號\",,,24 hours,22.306340,114.230180,0\n8,fnd-one-kai-tak-2,One Kai Tak (II),啟德1號 (II),vending,\"8 Muk Ning Street, Kai Tak, Kowloon\",\"香港啟德沐寧街8號\",,,24 hours,22.329488,114.199920,0\n";
+      /* FND_FALLBACK_CSV_END */
 
       var STORES = [];
       var query = "";
@@ -742,49 +762,201 @@
         );
       }
 
+      function cacheBust(url) {
+        return url + (url.indexOf("?") >= 0 ? "&" : "?") + "t=" + Date.now();
+      }
+
+      function decodeUtf8(buffer) {
+        if (typeof TextDecoder !== "undefined") {
+          return new TextDecoder("utf-8").decode(buffer);
+        }
+        var bytes = new Uint8Array(buffer);
+        var binary = "";
+        for (var i = 0; i < bytes.length; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        try {
+          return decodeURIComponent(escape(binary));
+        } catch (e) {
+          return binary;
+        }
+      }
+
       function fetchCsvText(url) {
-        return fetch(url, { cache: "no-store" })
-          .then(function (res) {
-            if (!res.ok) throw new Error("CSV not found");
-            return res.arrayBuffer();
-          })
-          .then(function (buffer) {
-            return new TextDecoder("utf-8").decode(buffer);
-          });
+        if (typeof fetch !== "function") {
+          return Promise.reject(new Error("fetch missing"));
+        }
+        return fetch(cacheBust(url), {
+          cache: "no-store",
+          mode: "cors",
+          credentials: "omit",
+        }).then(function (res) {
+          if (!res.ok) throw new Error("CSV not found");
+          return res.arrayBuffer();
+        }).then(decodeUtf8);
+      }
+
+      function xhrCsvText(url) {
+        return new Promise(function (resolve, reject) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", cacheBust(url), true);
+          try {
+            xhr.overrideMimeType("text/plain; charset=utf-8");
+          } catch (e) {}
+          xhr.timeout = 8000;
+          xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText) {
+              resolve(xhr.responseText);
+            } else {
+              reject(new Error("XHR " + xhr.status));
+            }
+          };
+          xhr.onerror = function () {
+            reject(new Error("XHR error"));
+          };
+          xhr.ontimeout = function () {
+            reject(new Error("XHR timeout"));
+          };
+          xhr.send();
+        });
+      }
+
+      function scriptCsvText(url) {
+        return new Promise(function (resolve, reject) {
+          window.__FND_CSV__ = "";
+          var done = false;
+          var timer = setTimeout(function () {
+            if (done) return;
+            done = true;
+            reject(new Error("script timeout"));
+          }, 8000);
+          var s = document.createElement("script");
+          s.src = cacheBust(url);
+          s.async = true;
+          s.onload = function () {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            var text = window.__FND_CSV__ || "";
+            if (s.parentNode) s.parentNode.removeChild(s);
+            if (text) resolve(text);
+            else reject(new Error("script empty"));
+          };
+          s.onerror = function () {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            if (s.parentNode) s.parentNode.removeChild(s);
+            reject(new Error("script error"));
+          };
+          (document.head || document.body || document.documentElement).appendChild(s);
+        });
+      }
+
+      function readInlineFallback() {
+        var el = document.getElementById("fnd-csv-fallback");
+        var fromDom = el && String(el.value || el.textContent || "").trim();
+        if (fromDom) return fromDom;
+        return String(FALLBACK_CSV || "").trim();
+      }
+
+      function applyCsvText(text) {
+        STORES = parseCsv(text);
+        if (!STORES.length) throw new Error("CSV is empty");
+        sortMode = "default";
+        nearbyActive = false;
+        showAllOnMap();
+        if (showAllBtn) {
+          showAllBtn.textContent = "顯示全部 " + STORES.length + " 個網點";
+        }
+        setListVisible(true);
+      }
+
+      function loadRemoteCsv() {
+        var urls = CSV_URLS.slice();
+        function tryNextUrl() {
+          if (!urls.length) return Promise.reject(new Error("all urls failed"));
+          var url = urls.shift();
+          return fetchCsvText(url)
+            .catch(function () {
+              return xhrCsvText(url);
+            })
+            .catch(function () {
+              return tryNextUrl();
+            });
+        }
+        return tryNextUrl().catch(function () {
+          return scriptCsvText(CSV_JS_URL);
+        });
       }
 
       function loadCsv() {
-        return fetchCsvText(CSV_URL)
-          .then(function (text) {
-            STORES = parseCsv(text);
-            if (!STORES.length) throw new Error("CSV is empty");
-            sortMode = "default";
-            nearbyActive = false;
-            showAllOnMap();
-            showAllBtn.textContent = "顯示全部 " + STORES.length + " 個網點";
-            setListVisible(true);
+        var inline = readInlineFallback();
+        if (inline) {
+          try {
+            applyCsvText(inline);
+          } catch (e) {}
+        }
+        return loadRemoteCsv()
+          .then(applyCsvText)
+          .catch(function () {
+            if (!STORES.length) throw new Error("no fallback csv");
           });
       }
 
-      showAllBtn.addEventListener("click", showAllLocations);
-      hideAllBtn.addEventListener("click", hideAllLocations);
+      function bindEvents() {
+        if (showAllBtn) showAllBtn.addEventListener("click", showAllLocations);
+        if (hideAllBtn) hideAllBtn.addEventListener("click", hideAllLocations);
+        if (queryInput) {
+          queryInput.addEventListener("input", function (event) {
+            query = event.target.value;
+            nearbyActive = false;
+            renderList(STORES);
+          });
+        }
+        if (locateBtn) {
+          locateBtn.addEventListener("click", function () {
+            requestUserLocation(false);
+          });
+        }
+      }
 
-      queryInput.addEventListener("input", function (event) {
-        query = event.target.value;
-        nearbyActive = false;
-        renderList(STORES);
-      });
+      var started = false;
 
-      locateBtn.addEventListener("click", function () {
-        requestUserLocation(false);
-      });
+      function start() {
+        listEl = document.getElementById("fnd-list");
+        countEl = document.getElementById("fnd-count");
+        msgEl = document.getElementById("fnd-msg");
+        locateBtn = document.getElementById("fnd-locate");
+        queryInput = document.getElementById("fnd-query");
+        mapFrame = document.getElementById("fnd-gmap-frame");
+        showAllBtn = document.getElementById("fnd-show-all");
+        hideAllBtn = document.getElementById("fnd-hide-all");
+        detailEl = document.getElementById("fnd-detail");
+        detailEnEl = document.getElementById("fnd-detail-en");
+        detailZhEl = document.getElementById("fnd-detail-zh");
 
-      loadCsv().catch(function () {
-        listEl.innerHTML =
-          '<div class="fnd-empty"><strong>Could not load locations.csv</strong><p>Check https://claudia-floweb.vercel.app/locations.csv</p></div>';
-        countEl.textContent = "0 places";
-        mapFrame.src = GOOGLE_MY_MAPS;
-      });
+        if (!listEl || !countEl) {
+          setTimeout(start, 50);
+          return;
+        }
+        if (started) return;
+        started = true;
+
+        bindEvents();
+        loadCsv().catch(function () {
+          listEl.innerHTML =
+            '<div class="fnd-empty"><strong>Could not load locations.csv</strong><p>Check https://claudia-floweb.vercel.app/locations.csv</p></div>';
+          countEl.textContent = "0 places";
+          if (mapFrame) mapFrame.src = GOOGLE_MY_MAPS;
+        });
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", start);
+      } else {
+        start();
+      }
     })();
   </script>
 </div>
